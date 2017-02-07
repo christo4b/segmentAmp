@@ -1,0 +1,4 @@
+{"username": "o9amxb7u", "timestamp": "1396381378123", "user_id": "12ec721b-0d16-424d-b27d-c50db3e9b2d5", "email": "wgqnkiru@definitely_not_a_spammer.internet"}
+
+
+curl --data 'api_key=b8a4b65d5b20fca2615bcae6154ef56e' --data 'event=[{"username": "o9amxb7u", "timestamp": "1396381378123", "event_type": "watch_tutorial", "user_id": "12ec721b-0d16-424d-b27d-c50db3e9b2d5", "email": "wgqnkiru@definitely_not_a_spammer.internet"}]' https://api.amplitude.com/httpapi
