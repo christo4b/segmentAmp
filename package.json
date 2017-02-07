@@ -1,0 +1,10 @@
+{
+  "name": "segment",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/christo4b/segmentAmp.git",
+  "author": "Chris Bassano <christo4b@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+  }
+}
