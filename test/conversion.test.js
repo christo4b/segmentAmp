@@ -10,15 +10,6 @@ describe("Conversion to Amplitude Format:", function(){
       done()
     })
     
-    // it handles null cases
-
-    // it takes a string or an object
-
-    // it returns an object
-
-      // the object it returns does not contain properties that point to null cases
-      // the object may contain default values if the data wasn't provided
-
     it('throws an error if missing parameters', function(){
       expect(() => conversion.convertAmp()).to.throw('Missing Required Parameters')
       expect(() => conversion.convertAmp({user: '1232'})).to.throw('Missing Required Parameters')
@@ -30,6 +21,14 @@ describe("Conversion to Amplitude Format:", function(){
       expect(() => conversion.convertAmp({context: { device: { id: '123331' }}})).to.not.throw('Missing Required Parameters')
     }) 
 
+    // it handles null cases
+
+    // it takes a string or an object
+
+    // it returns an object
+
+      // the object it returns does not contain properties that point to null cases
+      // the object may contain default values if the data wasn't provided
 
   })
 

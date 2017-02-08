@@ -12,13 +12,12 @@ const checkNested = (obj, ...args) => {
 }
 
 const convertAmp = (line) => {
-  if (!line) throw Error('Missing Required Parameters')
+  if (!line || !checkForReqs(line)) throw Error('Missing Required Parameters')
   if (typeof line === 'string') JSON.parse(line)
-  if (!checkForReqs(line)) throw Error('Missing Required Parameters')
 
-  // If the incoming object didn't have any of these values, we'd get a reference error.
-  // This is assuming the input object contains these properties.
-  // To combat this issue, we could check for the existence of these properties and if null, send default values
+  // My solution is assuming the input object contains these properties.
+  // In production, we'd have a function that would check for the existence of these properties
+  // I built some simple checks for the required parameters, but most of these are susceptible to reference errors
   return {
     user_id: line.userId,
     device_id: line.context.device.id,
@@ -26,7 +25,7 @@ const convertAmp = (line) => {
     os_name: line.context.os.name,
     os_version: line.context.os.version,
     platform: line.context.device.type,
-    event_type: line.type,
+    event_type: line.type || 'unknown',
     location_lat: line.context.location.latitude,
     location_lng: line.context.location.longitude,
     ip: line.ip,
@@ -37,8 +36,6 @@ const convertAmp = (line) => {
 }
 
 const checkForReqs = (line) => {
-  // check for "type", if no type send an "unknown"
-  if (!line.type) line.type = 'unknown'
   // check to see if input contains userId OR device id
   if (line.userId) {
     return true
