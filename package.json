@@ -6,7 +6,12 @@
   "author": "Chris Bassano <christo4b@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "chai": "^3.5.0",
     "event-stream": "^3.3.4",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-mocha-test": "^0.13.2",
+    "grunt-standard": "^2.0.0",
+    "mocha": "^3.2.0",
     "unix-timestamp": "^0.2.0"
   }
 }
