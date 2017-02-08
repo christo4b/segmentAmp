@@ -1,13 +1,20 @@
 const timeStamp = require('unix-timestamp')
 timeStamp.round = true
 
+const checkNested = (obj, ...args) => {
+  for (let i = 0; i < args.length; i++) {
+    if (!obj || !obj.hasOwnProperty(args[i])) return false
+    obj = obj[args[i]]
+  }
+  return true
+}
+
 const convertAmp = (line) => {
   line = JSON.parse(line)
 
-  // INSERT ERROR CHECKING __
-  // Do they have userid or device id? what about event type?
+  if (!checkForReqs(line)) throw Error('Missing Parameters')
 
-  let ret = {
+  return {
     user_id: line.userId,
     device_id: line.context.device.id,
     time: timeStamp.fromDate(line.timestamp),
@@ -22,8 +29,22 @@ const convertAmp = (line) => {
     device_model: line.context.device.model,
     device_brand: line.context.device.brand
   }
-
-  return ret
 }
 
-module.exports = convertAmp
+const checkForReqs = (line) => {
+  // check for "type", if no type send an "unknown"
+  if (!line.type) line.type = 'unknown'
+  // check to see if USERid OR device id
+  if (line.userId) {
+    return true
+  } else {
+    // check for device id
+    return checkNested(line, 'context', 'device', 'id')
+  }
+}
+
+module.exports = {
+  convertAmp: convertAmp,
+  checkForReqs: checkForReqs,
+  checkNested: checkNested
+}
