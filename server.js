@@ -23,7 +23,7 @@ fs.createReadStream(pathToFile)
     // Convert to Amplitude format and stringify
     line = JSON.stringify(convertAmp(line))
 
-    // Format post querystring
+    // Format POST querystring
     const post_data = querystring.stringify({
       api_key: secret.api_key,
       event: line

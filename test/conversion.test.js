@@ -2,14 +2,6 @@ const conversion = require('../src/conversion.js')
 const assert = require('assert')
 const { expect } = require('chai')
 
-const checkNested = (obj, ...args) => {
-  for (let i = 0; i < args.length; i++){
-    if (!obj || !obj.hasOwnProperty(args[i])) return false
-    obj = obj[args[i]]
-  }
-  return true
-}
-
 describe("Conversion to Amplitude Format:", function(){
 
   describe("convertAmp", function (){
@@ -24,8 +16,37 @@ describe("Conversion to Amplitude Format:", function(){
 
     // it returns an object
 
-    // it returns an error if there are missing parameters 
+      // the object it returns does not contain properties that point to null cases
+      // the object may contain default values if the data wasn't provided
 
+    it('throws an error if missing parameters', function(){
+      expect(() => conversion.convertAmp()).to.throw('Missing Required Parameters')
+      expect(() => conversion.convertAmp({user: '1232'})).to.throw('Missing Required Parameters')
+      expect(() => conversion.convertAmp({context: { device: { id: null }}})).to.throw('Missing Required Parameters')
+    }) 
+
+    it('does not throw an error if gets required parameters', function(){
+      expect(() => conversion.convertAmp({userId: '123123'})).to.not.throw('Missing Required Parameters')
+      expect(() => conversion.convertAmp({context: { device: { id: '123331' }}})).to.not.throw('Missing Required Parameters')
+    }) 
+
+
+  })
+
+  describe("checkNested", function(){
+    it('is a function', function(){
+      expect(conversion.checkNested).to.be.a('function')
+    })
+
+    it('returns false when it fails to find nested objects', function(){
+      assert.equal(false, conversion.checkNested({context: "one", device: { nested: "two" }}, 'context', 'device', 'id'))
+      assert.equal(false, conversion.checkNested({context: { device: { id: null }}}, 'context', 'device', 'id'))
+      assert.equal(false, conversion.checkNested({context: { device: { id: undefined }}}, 'context', 'device', 'id'))
+    })
+
+    it('returns true when it successfully finds nested objects', function(){
+      assert.equal(true, conversion.checkNested({context: { device: { id: "two" }}}, 'context', 'device', 'id'))
+    })
   })
 
   describe("checkForReqs", function(){
@@ -41,6 +62,7 @@ describe("Conversion to Amplitude Format:", function(){
 
     it('returns false when missing arguments', function(){
       assert.equal(false, conversion.checkForReqs({user_id: '1092831029', platform: 'ios'}))
+      assert.equal(false, conversion.checkForReqs({"sku": "31faa5ce-2973-45e9-a3a4-ddc057cf20d5", "category": "Widgets", "product_id": "31faa5ce-2973-45e9-a3a4-ddc057cf20d5", "timestamp": "2017-01-07T18:17:39.737758", "brand": "WidgetCo", "name": "Widget eclfthar", "price": 70.99, "currency": "usd", "version": 2, "context": {"locale": "en-GB", "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1", "location": {"latitude": 40.2964197, "city": "San Francisco", "speed": 0, "longitude": -76.9411617, "country": "United States"}, "timezone": "Europe/Amsterdam", "device": {"advertisingId": "fce56ead-13b8-4f3f-aaa4-9c9096e63af4", "token": "25e29d16-fc24-418a-bba8-099de37374ea", "model": "iPhone6", "type": "ios", "id": undefined, "adTrackingEnabled": true, "manufacturer": "Apple"}, "ip": "215.186.63.78", "screen": {"width": 320, "density": 2, "height": 568}, "os": {"version": "8.1.3", "name": "iPhone OS"}, "library": {"version": 3, "name": "analytics-python"}, "network": {"wifi": false, "carrier": "T-Mobile NL", "cellular": true, "bluetooth": false}}, "messageId": "583401fc-bacd-4e39-9765-b10266c8fcf3", "type": "track", "event": "Product Viewed", "quantity": 1}))
     })
 
   })

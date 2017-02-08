@@ -1,19 +1,24 @@
 const timeStamp = require('unix-timestamp')
 timeStamp.round = true
 
+// finds nested objects to avoid throwing reference errors
 const checkNested = (obj, ...args) => {
   for (let i = 0; i < args.length; i++) {
     if (!obj || !obj.hasOwnProperty(args[i])) return false
+    if (!obj[args[i]]) return false
     obj = obj[args[i]]
   }
   return true
 }
 
 const convertAmp = (line) => {
-  line = JSON.parse(line)
+  if (!line) throw Error('Missing Required Parameters')
+  if (typeof line === 'string') JSON.parse(line)
+  if (!checkForReqs(line)) throw Error('Missing Required Parameters')
 
-  if (!checkForReqs(line)) throw Error('Missing Parameters')
-
+  // If the incoming object didn't have any of these values, we'd get a reference error.
+  // This is assuming the input object contains these properties.
+  // To combat this issue, we could check for the existence of these properties and if null, send default values
   return {
     user_id: line.userId,
     device_id: line.context.device.id,
@@ -34,12 +39,12 @@ const convertAmp = (line) => {
 const checkForReqs = (line) => {
   // check for "type", if no type send an "unknown"
   if (!line.type) line.type = 'unknown'
-  // check to see if USERid OR device id
+  // check to see if input contains userId OR device id
   if (line.userId) {
     return true
   } else {
-    // check for device id
-    return checkNested(line, 'context', 'device', 'id')
+    // The Device ID is nested so we use checkNested to give us a Boolean if it exists and is not falsey
+    return (checkNested(line, 'context', 'device', 'id'))
   }
 }
 
