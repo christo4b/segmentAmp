@@ -11,7 +11,7 @@ describe("Conversion to Amplitude Format:", function(){
     })
     
     it('throws an error if missing parameters', function(){
-      // expect(() => conversion.convertAmp()).to.throw('Missing Required Parameters')
+      expect(() => conversion.convertAmp()).to.throw('Missing Required Parameters')
       expect(() => conversion.convertAmp({user: '1232'})).to.throw('Missing Required Parameters')
       expect(() => conversion.convertAmp({context: { device: { id: null }}})).to.throw('Missing Required Parameters')
     }) 
@@ -26,10 +26,11 @@ describe("Conversion to Amplitude Format:", function(){
     // it takes a string or an object
 
     // it returns an object
-
       // the object it returns does not contain properties that point to null cases
       // the object may contain default values if the data wasn't provided
 
+    // There is a lot more testing that can be done to test specific expected output
+      // Setting up all of that would be a timely process so it is omitted here
   })
 
   describe("checkNested", function(){

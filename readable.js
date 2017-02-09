@@ -6,25 +6,10 @@ const secret = require('./secret.js')
 const https = require('https')
 const readline = require('readline')
 const brake = require('brake')
+const pathToFile = './test/30events.txt'
 
-// Throttled readStream
-const rl = readline.createInterface({
-  input: fs.createReadStream('./test/events.txt').pipe(brake(5000))
-})
-
-const ws = writeStreamToAmplitude()
-
-function writeStreamToAmplitude(){
-  const ws = stream.Writable()
-  ws._write = function(chunk, enc, next){
-    let obj = convertAmp(chunk.toString())
-    console.log(new Date())
-    sendToAmplitude(JSON.stringify(obj))
-  }
-  return ws
-}
-
-
+// Set logging to true in order to see timestamp and Amp's response
+const logging = false
 const options = {
   hostname: 'api.amplitude.com',
   path: '/httpapi',
@@ -33,31 +18,47 @@ const options = {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
 }
-function sendToAmplitude(data){
-      
-    // Format POST querystring
-    const post_data = querystring.stringify({
-      api_key: secret.api_key,
-      event: data
-    })
-    
-    const req = https.request(options, (res) => {      
-      console.log(`STATUS: ${res.statusCode}`)
-      res.setEncoding('utf8')
-      res.on('data', (chunk) => {
-        console.log(`BODY: ${chunk}`)
-      })
-    })
 
-    req.on('error', (e) => {
-      console.log(`problem with request: ${e.message}`)
-    })
+// Throttled readStream
+const rl = readline.createInterface({
+  input: fs.createReadStream(pathToFile).pipe(brake(20000))
+})
 
-
-    req.write(post_data)
-    req.end()
-}
+const ws = writeStreamToAmplitude()
 
 rl.on('line', function(line){
   ws._write(line) 
 })
+
+function writeStreamToAmplitude(){
+  const ws = stream.Writable()
+  ws._write = function(chunk, enc, next){
+    let obj = convertAmp(chunk.toString())
+    if (logging) console.log(new Date())
+    sendToAmplitude(JSON.stringify(obj))
+  }
+  return ws
+}
+
+function sendToAmplitude(data){
+  // Format POST querystring
+  const post_data = querystring.stringify({
+    api_key: secret.api_key,
+    event: data
+  })
+  
+  const req = https.request(options, (res) => {      
+    if (logging) console.log(`STATUS: ${res.statusCode}`)
+    res.setEncoding('utf8')
+    res.on('data', (chunk) => {
+      if (logging) console.log(`BODY: ${chunk}`)
+    })
+  })
+
+  req.on('error', (e) => {
+    if (logging) console.log(`problem with request: ${e.message}`)
+  })
+
+  req.write(post_data)
+  req.end()
+}
