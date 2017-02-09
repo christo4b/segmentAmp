@@ -30,5 +30,9 @@ I used Node Streams to read this file because this will allow the program to rea
 
 The Amplitude API asks for up to 1000 events per second. I ended up using a rate-limiter on the Read-Stream which is less than ideal because it doesn't allow fine tuning. 
 
-This repo could use additional test coverage. I only did basic unit testing for required fields. There is no end-to-end testing. I listed out some other unit tests that I would write.
+### Possible improvements: 
+The Amplitude API allows for batched events, so we could potentially store arrays of events in memory and send them out, reduce the number of HTTP requests made. 
 
+We could process the events and determine if any are missing data. Those events can get written to another file of incomplete events for human intervention. This can be done by piping another Transform stream that filters out bad events. We could also move the conversion step this other Transform stream.
+
+This repo could use additional test coverage. I only did basic unit testing for required fields. There is no end-to-end testing. I wrote out some comments of other possible unit tests in the test file.
