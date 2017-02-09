@@ -36,12 +36,9 @@ function sendToAmplitude(data){
       api_key: secret.api_key,
       event: data
     })
-
-    console.log("POST_DATA: ", post_data)
     
     const req = https.request(options, (res) => {      
       console.log(`STATUS: ${res.statusCode}`);
-      console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
       res.setEncoding('utf8')
       res.on('data', (chunk) => {
         console.log(`BODY: ${chunk}`);
@@ -58,5 +55,5 @@ function sendToAmplitude(data){
 }
 
 rl.on('line', function(line){
-  ws._write(line)
+  setTimeout(function(){ws._write(line)}, 100)
 })

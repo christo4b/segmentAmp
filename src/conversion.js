@@ -8,26 +8,20 @@ const checkNested = (obj, ...args) => {
   }
   for (let i = 0; i < args.length; i++) {
     if (!obj || !obj.hasOwnProperty(args[i])) {
-      console.log('obj does not have own property,')
       return false
     }
     if (!obj[args[i]]) {
-      console.log('obj has property but set to null')
       return false
     }
     obj = obj[args[i]]
-
   }
-
   return true
 }
 
 const convertAmp = (line) => {
-
   if (!line) console.log('There was an error, nothing passed to convertAmp')
   if (typeof line === 'string') line = JSON.parse(line)
   if (!checkForReqs(line)) {
-    console.log('There was an error - this line does not have required parameters')
     throw new Error('Missing Required Parameters')
   }
 
