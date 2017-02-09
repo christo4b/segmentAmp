@@ -3,17 +3,33 @@ timeStamp.round = true
 
 // finds nested objects to avoid throwing reference errors
 const checkNested = (obj, ...args) => {
-  for (let i = 0; i < args.length; i++) {
-    if (!obj || !obj.hasOwnProperty(args[i])) return false
-    if (!obj[args[i]]) return false
-    obj = obj[args[i]]
+  if (typeof obj === 'string') {
+    obj = JSON.parse(obj)
   }
+  for (let i = 0; i < args.length; i++) {
+    if (!obj || !obj.hasOwnProperty(args[i])) {
+      console.log('obj does not have own property,')
+      return false
+    }
+    if (!obj[args[i]]) {
+      console.log('obj has property but set to null')
+      return false
+    }
+    obj = obj[args[i]]
+
+  }
+
   return true
 }
 
 const convertAmp = (line) => {
-  if (!line || !checkForReqs(line)) throw Error('Missing Required Parameters')
-  if (typeof line === 'string') JSON.parse(line)
+
+  if (!line) console.log('There was an error, nothing passed to convertAmp')
+  if (typeof line === 'string') line = JSON.parse(line)
+  if (!checkForReqs(line)) {
+    console.log('There was an error - this line does not have required parameters')
+    throw new Error('Missing Required Parameters')
+  }
 
   // My solution is assuming the input object contains these properties.
   // In production, we'd have a function that would check for the existence of these properties
@@ -36,6 +52,9 @@ const convertAmp = (line) => {
 }
 
 const checkForReqs = (line) => {
+  if (typeof line === 'string') {
+    line = JSON.parse(line)
+  }
   // check to see if input contains userId OR device id
   if (line.userId) {
     return true
