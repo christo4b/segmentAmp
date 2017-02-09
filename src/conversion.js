@@ -27,7 +27,7 @@ const convertAmp = (line) => {
 
   // My solution is assuming the input object contains these properties.
   // In production, we'd have a function that would check for the existence of these properties
-  // I built some simple checks for the required parameters, but most of these are susceptible to reference errors
+  // I built some simple checks for the required parameters
   return {
     user_id: line.userId,
     device_id: line.context.device.id,
@@ -38,10 +38,10 @@ const convertAmp = (line) => {
     event_type: line.type || 'unknown',
     location_lat: line.context.location.latitude,
     location_lng: line.context.location.longitude,
-    ip: line.ip,
+    ip: line.context.ip,
     carrier: line.context.network.carrier,
     device_model: line.context.device.model,
-    device_brand: line.context.device.brand
+    device_brand: line.context.device.manufacturer
   }
 }
 
